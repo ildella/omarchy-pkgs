@@ -1,0 +1,31 @@
+# Maintainer: Daniele Dellafiore <daniele@nucube.music>
+pkgname=nucube-bin
+pkgver=0.14.2
+pkgrel=1
+pkgdesc="Player for collectors. Built for the music you own."
+arch=('x86_64')
+url="https://nucube.music"
+license=('LicenseRef-Nucube-EULA')
+depends=('gtk3' 'webkit2gtk-4.1' 'alsa-lib' 'hicolor-icon-theme' 'xdg-utils' 'dbus')
+optdepends=('libayatana-appindicator: tray icon support')
+provides=("nucube=${pkgver}")
+conflicts=('nucube')
+options=('!strip' '!debug')
+_binaries_repo="https://github.com/ildella/nucube-binaries"
+source=('EULA' 'THIRD_PARTY_NOTICES.md')
+source_x86_64=("Nucube_${pkgver}_x86_64.tar.gz::${_binaries_repo}/releases/download/v${pkgver}/Nucube_${pkgver}_x86_64.tar.gz")
+sha256sums=('ebad5c39eac9f8ef8518d8a83189d1d37c633587fbe0824b38c3c3df756edf8c' 'f9d2f0dfbc03e771ed3588481c57b8153b974146781400ff3f756d3be8a5437f')
+sha256sums_x86_64=('1d5950cd9488262e8bf5fb90e3b9946d5593c853b2964a5397a28cbec361c91b')
+
+package() {
+  cd "$srcdir"
+  install -Dm755 usr/bin/nucube "$pkgdir/usr/bin/nucube"
+  install -d "$pkgdir/usr/share"
+  cp -a usr/share/icons "$pkgdir/usr/share/"
+  install -Dm644 EULA "$pkgdir/usr/share/licenses/$pkgname/EULA"
+  install -Dm644 THIRD_PARTY_NOTICES.md "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY_NOTICES.md"
+  local entry="usr/share/applications/Nucube.desktop"
+  [[ -f "$entry" ]] || entry="usr/share/applications/nucube.desktop"
+  install -Dm644 "$entry" "$pkgdir/usr/share/applications/nucube.desktop"
+}
+
